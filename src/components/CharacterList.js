@@ -10,6 +10,15 @@ import MrWorldLogo from "../images/MrWorlLogo.png";
 import axios from "axios";
 import StripeContainer from "./StripeContainer";
 import PaymentPage from "./PaymentPage";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useHistory,
+  useLocation,
+  useParams,
+} from "react-router-dom";
 
 function CharacterList() {
   const [show, setShow] = useState(false);
@@ -29,14 +38,35 @@ function CharacterList() {
 
   const [justifyCenter, setJustifyCenter] = useState("");
 
+  // URL id
+  const { charId } = useParams();
+
   useEffect(() => {
-    const fetchAllCharacters = async () => {
-      const response = await axios.get(
-        "https://voteapi.xctuality.com/characters"
-      );
-      setCharData(response.data.data);
-    };
-    fetchAllCharacters();
+    if (!charId) {
+      const fetchAllCharacters = async () => {
+        try {
+          const response = await axios.get(
+            "https://voteapi.xctuality.com/characters"
+          );
+          setCharData(response.data.data);
+        } catch (error) {}
+      };
+      fetchAllCharacters();
+    } else {
+      const fetchSingleChar = async () => {
+        try {
+          const response = await axios.get(
+            `https://voteapi.xctuality.com/character/${charId}`
+          );
+          console.log(response.data.data);
+          setCharData(response.data.data);
+          setJustifyCenter("justify-center");
+        } catch (error) {
+          // console.log(error);
+        }
+      };
+      fetchSingleChar();
+    }
   }, []);
 
   const handleClose = () => setShow(false);
@@ -116,7 +146,7 @@ function CharacterList() {
         keyBoardControl={true}
         customTransition="all .5"
         transitionDuration={500}
-        containerClass={`carousel-container`}
+        containerClass={`carousel-container ${justifyCenter}`}
         dotListClass="custom-dot-list-style"
         itemClass="carousel-item-padding-40-px"
       >

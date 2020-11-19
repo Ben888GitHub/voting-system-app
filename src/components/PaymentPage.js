@@ -128,8 +128,7 @@ function PaymentPage({
     billDetails
   ) => {
     const result = await axios.post(
-      //   "https://voting-payments.xctuality.com/stripe/charge",
-      "http://localhost:7000/stripe/charge",
+      "https://voting-payments.xctuality.com/stripe/charge",
       {
         amount: latestPrice * 100,
         // id: paymentMethodId.id, //todo
@@ -162,8 +161,7 @@ function PaymentPage({
 
       try {
         const response = await axios.post(
-          //   "https://voting-payments.xctuality.com/stripe/charge",
-          "http://localhost:7000/stripe/charge",
+          "https://voting-payments.xctuality.com/stripe/charge",
           {
             amount: latestPrice * 100,
             id: paymentMethod.id,
