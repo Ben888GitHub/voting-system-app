@@ -1,0 +1,70 @@
+.navbar-height {
+  height: 30px;
+}
+
+.top-voting-header {
+  font-weight: bold;
+}
+
+.mr-world-logo {
+  width: 220px;
+}
+
+.justify-center {
+  justify-content: "center";
+}
+
+.character-image {
+  width: 350px;
+}
+
+.card-style-main {
+  width: 14rem;
+  border-radius: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.character-name-card {
+  font-weight: bold;
+}
+
+.current-vote-points {
+  font-weight: bold;
+  margin-top: 5;
+}
+
+.modal-character-image {
+  width: 220px;
+  align-self: center;
+}
+
+.button-style-main {
+  margin-left: auto;
+  margin-right: auto;
+  flex-direction: row;
+  text-align: center;
+  display: flex;
+}
+
+.button-decrement {
+  font-size: 30px;
+  color: #333b3f;
+}
+
+.button-increment {
+  font-size: 30px;
+  color: #333b3f;
+}
+
+.button-vote-position {
+  display: flex;
+  justify-content: center;
+}
+
+.button-vote {
+  font-weight: 600;
+  width: 120px;
+  margin-bottom: 30px;
+  margin-top: 10px;
+}
