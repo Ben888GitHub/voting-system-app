@@ -9,16 +9,7 @@ import "react-multi-carousel/lib/styles.css";
 import MrWorldLogo from "../images/MrWorlLogo.png";
 import axios from "axios";
 import StripeContainer from "./StripeContainer";
-import PaymentPage from "./PaymentPage";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useHistory,
-  useLocation,
-  useParams,
-} from "react-router-dom";
+import { BrowserRouter as Router, useParams } from "react-router-dom";
 
 function CharacterList() {
   const [show, setShow] = useState(false);
@@ -89,13 +80,14 @@ function CharacterList() {
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
-      items: 3,
-      slidesToSlide: 3,
+      //   breakpoint: { max: 3100, min: 1124 },
+      items: 4, // 3
+      slidesToSlide: 4, // 3
     },
     tablet: {
       breakpoint: { max: 1024, min: 464 },
-      items: 2,
-      slidesToSlide: 2, // optional, default to 1.
+      items: 2, // optional, default to 2.
+      slidesToSlide: 2, // optional, default to 2.
     },
     mobile: {
       breakpoint: { max: 464, min: 0 },
@@ -113,6 +105,7 @@ function CharacterList() {
           setShowReset(false);
         }}
         style={{
+          marginLeft: 10,
           fontSize: 16,
           fontWeight: "600",
           height: 30,
@@ -205,7 +198,9 @@ function CharacterList() {
               }
             }}
           >
-            <RemoveCircleRoundedIcon className="button-decrement" />
+            <RemoveCircleRoundedIcon
+              style={{ fontSize: 30, color: "#333B3F" }}
+            />
           </IconButton>
 
           <h5 style={{ marginTop: 14 }}>Your Vote: {initVotePoints}</h5>
@@ -233,9 +228,7 @@ function CharacterList() {
           </Button>
         </div>
       </Modal>
-      {/* <Modal>
 
-      </Modal> */}
       <StripeContainer
         latestPrice={latestPrice}
         modalData={modalData}

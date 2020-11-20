@@ -1,16 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import {
-  Button,
-  Form,
-  Card,
-  Col,
-  Row,
-  Modal,
-  Toast,
-  Alert,
-  Spinner,
-} from "react-bootstrap";
+import { Button, Form, Modal, Toast, Alert, Spinner } from "react-bootstrap";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 import CancelRoundedIcon from "@material-ui/icons/CancelRounded";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
@@ -32,12 +22,10 @@ function PaymentPage({
 
   const [staticValue, setStaticValue] = useState("non-static");
 
-  // todo, this is for cancelling payment
   const cancelPayment = () => {
     setShowPayment(false);
   };
 
-  // todo, this is for Payment Result (Success / Failure)
   const hidePayment = () => {
     setShowPayment(false);
     openResult();
@@ -58,14 +46,14 @@ function PaymentPage({
   const [showSuccess, setShowSuccess] = useState(false);
   const openSuccess = () => {
     setShowSuccess(true);
-    setShowPayment(false); //todo
+    setShowPayment(false);
   };
   const closeSuccess = () => setShowSuccess(false);
 
   const [showFailure, setShowFailure] = useState(false);
   const openFailure = () => {
     setShowFailure(true);
-    setShowPayment(false); //todo
+    setShowPayment(false);
   };
   const closeFailure = () => setShowFailure(false);
 
@@ -82,12 +70,8 @@ function PaymentPage({
   const [showSpinner, setShowSpinner] = useState(false);
 
   const CARD_OPTIONS = {
-    // iconStyle: "solid",
     style: {
-      // border: "2px solid red",
       base: {
-        // iconColor: "#c4f0ff",
-        // borderColor: "black",
         color: "#000",
         backgroundColor: "white",
         fontWeight: 500,
@@ -131,8 +115,7 @@ function PaymentPage({
       "https://voting-payments.xctuality.com/stripe/charge",
       {
         amount: latestPrice * 100,
-        // id: paymentMethodId.id, //todo
-        char_id: modalData.id, //todo
+        char_id: modalData.id,
         points: initVotePoints,
         charName: charName,
         stripeTransactionId: paymentIntentId,
@@ -155,7 +138,7 @@ function PaymentPage({
 
     if (!error) {
       setDisabledButton(true);
-      setStaticValue("static"); //todo, this makes the Modal backdrop become static
+      setStaticValue("static"); //This makes the Modal backdrop become static
       setLoadPayment("Processing...");
       setShowSpinner(true);
 
@@ -304,13 +287,11 @@ function PaymentPage({
             </div>
           </form>
         </div>
-        {/* <Button onClick={hidePayment}>Pay</Button> */}
       </Modal>
 
       <div>
         <Modal
           show={showSuccess}
-          // onHide={closeResult}
           onHide={closeSuccess}
           keyboard={true}
           backdrop={staticValue}
@@ -340,7 +321,6 @@ function PaymentPage({
               style={{ fontWeight: "600", width: "65%", marginTop: 30 }}
               variant="success"
               onClick={() => {
-                // window.location.reload(false);
                 closeSuccess();
               }}
             >
@@ -349,10 +329,6 @@ function PaymentPage({
           </div>
           <br />
           <br />
-
-          {/* <Modal.Header closeButton>
-          <h2>Payment Result</h2>
-        </Modal.Header> */}
         </Modal>
       </div>
 
@@ -387,7 +363,6 @@ function PaymentPage({
           <Modal.Body style={{ fontWeight: "500", fontSize: 18 }}>
             Your bank replied with this error:{" "}
             <p style={{ color: "#DC3544" }}>{errorCode}</p>
-            {/* <br /> */}
             Please check your payment details and try again.
           </Modal.Body>
 
@@ -396,7 +371,6 @@ function PaymentPage({
               style={{ fontWeight: "600", width: "65%", marginTop: 30 }}
               variant="danger"
               onClick={() => {
-                // window.location.reload(false);
                 closeFailure();
               }}
             >
@@ -405,10 +379,6 @@ function PaymentPage({
           </div>
           <br />
           <br />
-
-          {/* <Modal.Header closeButton>
-          <h2>Payment Result</h2>
-        </Modal.Header> */}
         </Modal>
       </div>
 
