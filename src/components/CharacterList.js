@@ -170,6 +170,8 @@ function CharacterList() {
           );
         })}
       </Carousel>
+      <br />
+      <br />
       <Modal show={show} onHide={handleClose} keyboard={true}>
         <Modal.Header closeButton>
           <h3 className="character-name-card modal-title w-100 text-center">
