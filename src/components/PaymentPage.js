@@ -69,6 +69,8 @@ function PaymentPage({
 
   const [showSpinner, setShowSpinner] = useState(false);
 
+  const [paymentIntentId, setPaymentIntentId] = useState("");
+
   const CARD_OPTIONS = {
     style: {
       base: {
@@ -106,39 +108,20 @@ function PaymentPage({
     );
   };
 
-  // Executing the Stripe Payment Intent API endpoint as well as CreateVote API endpoint
-  const setVotingPointAfterConfirmation = async (
-    paymentIntentId,
-    billDetails
-  ) => {
-    const result = await axios.post(
-      "https://voting-payments.xctuality.com/stripe/charge",
-      {
-        amount: latestPrice * 100,
-        char_id: modalData.id,
-        points: initVotePoints,
-        charName: charName,
-        stripeTransactionId: paymentIntentId,
-        cust_name: billDetails.name,
-        cust_email: billDetails.email,
-      }
-    );
-    console.log(result.data);
-  };
-
-  const handleSubmit = async (event) => {
+  const theHandleSubmit = async (event) => {
     event.preventDefault();
 
-    // Collect Card Details
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
+    const result = await stripe.createPaymentMethod({
       type: "card",
       card: elements.getElement(CardElement),
       billing_details: billingDetails,
     });
 
-    if (!error) {
+    if (!result.error) {
+      console.log("Stripe 23 | Token Generated", result.paymentMethod);
+      console.log(result.paymentMethod.id);
       setDisabledButton(true);
-      setStaticValue("static"); //This makes the Modal backdrop become static
+      setStaticValue("static");
       setLoadPayment("Processing...");
       setShowSpinner(true);
 
@@ -147,50 +130,129 @@ function PaymentPage({
           "https://voting-payments.xctuality.com/stripe/charge",
           {
             amount: latestPrice * 100,
-            id: paymentMethod.id,
-            char_id: modalData.id, //todo
-            points: finalVotePoints,
+            payment_method_id: result.paymentMethod.id,
+            points: initVotePoints,
+            char_id: modalData.id,
             charName: charName,
+            // stripeTransactionId: paymentIntentId, //todo
+            cust_name: billingDetails.name,
+            cust_email: billingDetails.email,
           }
         );
-
-        await stripe
-          .confirmCardPayment(response.data.client_secret, {
-            payment_method: paymentMethod.id,
-          })
-          .then((payload) => {
-            if (payload.error) {
-              setFinalVotePoints(0);
-              setErrorCode(payload.error.code);
-
-              openFailure();
-              setStaticValue("non-static");
-              setLoadPayment("Complete Payment");
-              setDisabledButton(false);
-              setShowSpinner(false);
-              setBillingDetails({
-                name: "",
-                email: "",
-              });
-            } else {
-              setAmountVal(latestPrice * 100);
-              console.log(billingDetails);
-              setVotingPointAfterConfirmation(
-                payload.paymentIntent.id,
-                billingDetails
-              );
-              setStaticValue("non-static");
-              openSuccess();
-              setLoadPayment("Complete Payment");
-              setDisabledButton(false);
-              setShowSpinner(false);
-              setBillingDetails({
-                name: "",
-                email: "",
-              });
-            }
+        console.log(response.data);
+        if (response.data.error) {
+          console.log(response.data.error);
+          setErrorCode(response.data.error);
+          openFailure();
+          setDisabledButton(false);
+          setStaticValue("non-static");
+          setLoadPayment("Complete Payment");
+          setShowSpinner(false);
+          setBillingDetails({
+            name: "",
+            email: "",
           });
+        }
+
+        if (response.data.requires_action) {
+          console.log(response.data);
+          console.log(response.data.requires_action);
+          console.log(response.data.payment_intent_client_secret);
+          stripe
+            .handleCardAction(response.data.payment_intent_client_secret)
+            .then((data) => {
+              if (data.error) {
+                console.log(data.error);
+                console.log(
+                  "Your card was not authenticated, please try again"
+                );
+                setErrorCode(
+                  "Your card was not authenticated, please try again"
+                );
+                openFailure();
+                setDisabledButton(false);
+                setStaticValue("non-static");
+                setLoadPayment("Complete Payment");
+                setShowSpinner(false);
+                setBillingDetails({
+                  name: "",
+                  email: "",
+                });
+              } else if (
+                data.paymentIntent.status === "requires_confirmation"
+              ) {
+                console.log(data.paymentIntent.id);
+                // setPaymentIntentId(data.paymentIntent.id); //todo
+
+                const responsePayment = async () => {
+                  await axios
+                    .post(
+                      "https://voting-payments.xctuality.com/stripe/charge",
+                      {
+                        payment_intent_id: data.paymentIntent.id,
+                      }
+                    )
+                    .then((output) => {
+                      if (!output) {
+                        console.log("Payment error");
+                      } else {
+                        console.log(output);
+                        console.log(output.data); // {success: true}
+                        console.log(output.config.data); //this represents the paymentIntent id
+                        // console.log(response.data.payment_intent_client_secret);
+
+                        if (!output.data.error) {
+                          console.log("3D Secure Payment Successful");
+                          // setPaymentIntentId(data.paymentIntent.id); //todo
+                          openSuccess();
+                          setDisabledButton(false);
+                          setStaticValue("non-static");
+                          setLoadPayment("Complete Payment");
+                          setShowSpinner(false);
+                          setBillingDetails({
+                            name: "",
+                            email: "",
+                          });
+                        }
+                        if (output.data.error) {
+                          // setPaymentIntentId(data.paymentIntent.id); //todo
+                          console.log("3D Secure Payment Failure");
+                          setErrorCode(output.data.error);
+                          openFailure();
+                          setDisabledButton(false);
+                          setStaticValue("non-static");
+                          setLoadPayment("Complete Payment");
+                          setShowSpinner(false);
+                          setBillingDetails({
+                            name: "",
+                            email: "",
+                          });
+                        }
+                      }
+                    });
+                };
+                responsePayment();
+              }
+            });
+        }
+
+        if (response.data.success) {
+          console.log("CheckoutForm.js 25 | payment successful!");
+          openSuccess();
+          setDisabledButton(false);
+          setStaticValue("non-static");
+          setLoadPayment("Complete Payment");
+          setShowSpinner(false);
+          setBillingDetails({
+            name: "",
+            email: "",
+          });
+        }
+        if (!response.data.success) {
+          console.log("Payment Intent Process...");
+        }
       } catch (error) {
+        console.log(error.message);
         toggleAlert();
         setStaticValue("non-static");
         setLoadPayment("Complete Payment");
@@ -198,6 +260,7 @@ function PaymentPage({
         setShowSpinner(false);
       }
     } else {
+      console.log(result.error.message);
       toggleAlert();
       setStaticValue("non-static");
       setLoadPayment("Complete Payment");
@@ -222,8 +285,9 @@ function PaymentPage({
             padding: 40,
           }}
         >
-          <form onSubmit={handleSubmit}>
-            <Form.Group controlId="formBasicEmail">
+          {/* <form onSubmit={handleSubmit}> */}
+          <form onSubmit={theHandleSubmit}>
+            <Form.Group>
               <Form.Label style={{ fontWeight: 500 }}>
                 Cardholder Name
               </Form.Label>
@@ -315,7 +379,8 @@ function PaymentPage({
           <Modal.Body style={{ fontWeight: "600" }}>
             You have successfully given {initVotePoints} vote(s) to {charName}{" "}
           </Modal.Body>
-          <h1>${Math.round(amountVal / 100).toFixed(2)}</h1>
+          <h1>${Math.round(latestPrice).toFixed(2)}</h1>
+          {/* <h1>${latestPrice}</h1> */}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Button
               style={{ fontWeight: "600", width: "65%", marginTop: 30 }}
