@@ -12,6 +12,8 @@ import StripeContainer from "./StripeContainer";
 import { BrowserRouter as Router, useParams } from "react-router-dom";
 
 function CharacterList() {
+  const [showTopHeader, setShowTopHeader] = useState(true); //todo
+
   const [show, setShow] = useState(false);
 
   const [charData, setCharData] = useState([]);
@@ -51,6 +53,7 @@ function CharacterList() {
           );
           console.log(response.data.data);
           setCharData(response.data.data);
+          setShowTopHeader(false);
           setJustifyCenter("justify-center");
         } catch (error) {
           // console.log(error);
@@ -78,19 +81,26 @@ function CharacterList() {
   const paymentCancel = () => setShowPayment(false);
 
   const responsive = {
+    superLargeDesktop: {
+      // the naming can be any, depends on you.
+      breakpoint: { max: 4000, min: 1920 },
+      items: 7,
+      slidesToSlide: 7,
+    },
     desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      //   breakpoint: { max: 3100, min: 1124 },
-      items: 4, // 3
-      slidesToSlide: 4, // 3
+      // breakpoint: { max: 3000, min: 1024 },
+      breakpoint: { max: 1920, min: 1200 },
+      items: 5, // 3
+      slidesToSlide: 5, // 3
     },
     tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 2, // optional, default to 2.
-      slidesToSlide: 2, // optional, default to 2.
+      // breakpoint: { max: 1024, min: 464 },
+      breakpoint: { max: 1200, min: 768 },
+      items: 3, // optional, default to 2.
+      slidesToSlide: 3, // optional, default to 2.
     },
     mobile: {
-      breakpoint: { max: 464, min: 0 },
+      breakpoint: { max: 768, min: 0 },
       items: 1,
       slidesToSlide: 1, // optional, default to 1.
     },
@@ -123,10 +133,14 @@ function CharacterList() {
   return (
     <div>
       <Navbar bg="dark" className="navbar-height"></Navbar>
-      <h1 className="top-voting-header">
-        VOTE TODAY
-        <Image className="mr-world-logo" src={MrWorldLogo} />1 DECEMBER
-      </h1>
+      {showTopHeader ? (
+        <h1 className="top-voting-header">
+          VOTE TODAY
+          <Image className="mr-world-logo" src={MrWorldLogo} />
+          12 DECEMBER
+        </h1>
+      ) : null}
+
       <Carousel
         swipeable={true}
         draggable={false}
