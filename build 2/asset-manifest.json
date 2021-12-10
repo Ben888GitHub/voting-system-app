@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/static/css/main.f1c76c5c.chunk.css",
+    "main.js": "/static/js/main.a05203d3.chunk.js",
+    "main.js.map": "/static/js/main.a05203d3.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.bdca294a.js",
+    "runtime-main.js.map": "/static/js/runtime-main.bdca294a.js.map",
+    "static/css/2.c6058578.chunk.css": "/static/css/2.c6058578.chunk.css",
+    "static/js/2.b5a1e5a2.chunk.js": "/static/js/2.b5a1e5a2.chunk.js",
+    "static/js/2.b5a1e5a2.chunk.js.map": "/static/js/2.b5a1e5a2.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/2.c6058578.chunk.css.map": "/static/css/2.c6058578.chunk.css.map",
+    "static/css/main.f1c76c5c.chunk.css.map": "/static/css/main.f1c76c5c.chunk.css.map",
+    "static/js/2.b5a1e5a2.chunk.js.LICENSE.txt": "/static/js/2.b5a1e5a2.chunk.js.LICENSE.txt",
+    "static/media/MrWorlLogo.16c111a6.png": "/static/media/MrWorlLogo.16c111a6.png",
+    "static/media/styles.css": "/static/media/revicons.e8746a62.woff"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.bdca294a.js",
+    "static/css/2.c6058578.chunk.css",
+    "static/js/2.b5a1e5a2.chunk.js",
+    "static/css/main.f1c76c5c.chunk.css",
+    "static/js/main.a05203d3.chunk.js"
+  ]
+}

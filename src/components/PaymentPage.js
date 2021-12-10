@@ -111,6 +111,7 @@ function PaymentPage({
   const theHandleSubmit = async (event) => {
     event.preventDefault();
 
+    // todo, console.log() the result to check what does it output
     const result = await stripe.createPaymentMethod({
       type: "card",
       card: elements.getElement(CardElement),

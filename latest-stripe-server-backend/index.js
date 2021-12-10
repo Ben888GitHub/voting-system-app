@@ -22,7 +22,7 @@ app.post("/stripe/charge", cors(), async (req, res) => {
     if (req.body.payment_method_id) {
       payment = await stripe.paymentIntents.create({
         amount: req.body.amount,
-        currency: "SGD",
+        currency: "SGD", // todo, do it without hardcode
         payment_method: req.body.payment_method_id,
         payment_method_types: ["card"],
         confirmation_method: "manual",
